@@ -37,13 +37,15 @@ public class App {
     private static ScriptEngine engine;
     private static Log LOG = Log.get("donkey");
 
-    public static void main(String[] args) throws FileNotFoundException, ScriptException {
+    public static void main(String[] args) {
         try {
             initialize();
             verifyCommandLine(args);
             createScriptingEngine();
             evalDonkeyLibrary();
             loadAndExecuteScript(args[0]);
+        } catch (Throwable t) {
+            Exceptions.handle(t);
         } finally {
             Sirius.stop();
         }
