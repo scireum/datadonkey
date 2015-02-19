@@ -1,6 +1,6 @@
 # DataDonkey
 
-Handles XML, CSV and Excel file.
+Processes XML, CSV and Excel files.
 
 DataDonkey is an OpenSource project by scireum GmbH. It is a scriptable ETL tool which processes various files.
 
