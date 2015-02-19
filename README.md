@@ -11,9 +11,13 @@ Download the latest datadonkey.jar from: https://oss.sonatype.org/content/groups
 See [demo/example.js](demo/example.xml) for an example script which combines an XML source ([demo/example.xml](demo/example.xml)) with a
 CSV file ([demo/example.csv](demo/example.csv)) and generates an Excel output.
 
+## Usage
+
+> java -jar datadonkey.jar myscript.js
+
 ## Reference
 
-* All relevant functions are defined in [donkey.js](src/main/resources/donkey.js)
+* All relevant functions are defined in [donkey.js](src/main/resources/donkey.js) (autoloaded on startup)
 * XML nodes are presented as [StructuredNode](http://sirius-lib.net/apidocs/sirius-kernel/sirius/kernel/xml/StructuredNode.html)
 * Rows of Excel or CVS files are represented as: [Values](http://sirius-lib.net/apidocs/sirius-kernel/sirius/kernel/commons/Values.html)
 * **queryValue(String)** of StructuredNode and **at(String)** of Values return: [Value](http://sirius-lib.net/apidocs/sirius-kernel/sirius/kernel/commons/Value.html)
