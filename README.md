@@ -8,7 +8,7 @@ Download the latest datadonkey.jar from: https://oss.sonatype.org/content/groups
 
 ## Example
 
-See [demo/example.js](/blob/master/demo/example.js) for an example script which combines and XML source ([demo/example.xml](/blob/master/demo/example.xml)) with a
+See [demo/example.js](/blob/master/demo/example.js) for an example script which combines an XML source ([demo/example.xml](/blob/master/demo/example.xml)) with a
 CSV file ([demo/example.csv](/blob/master/demo/example.csv)) and generates an Excel output.
 
 ## Reference
