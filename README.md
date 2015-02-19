@@ -4,32 +4,23 @@ Handles XML, CSV and Excel file.
 
 DataDonkey is an OpenSource project by scireum GmbH. It is a scriptable ETL tool which processes various files.
 
-Download the latest donkey.jar from: https://oss.sonatype.org/content/groups/public/com/scireum/datadonkey/
+Download the latest datadonkey.jar from: https://oss.sonatype.org/content/groups/public/com/scireum/datadonkey/
 
 ## Example
 
-Say you have an XML file like this:
+See demo/example.js for an example script which combines and XML source (demo/example.xml) with a
+CSV file (demo/example.csv) and generates an Excel output.
 
-Create a JavaScript file "test.js" like this:
-```
+## Reference
 
-```
-This is a module of the SIRIUS OpenSource project by scireum GmbH. For further information visit the project website: http://sirius-lib.net
-
-## Usage 
-To use this library in your own project include:
-```
-<dependency>
-    <groupId>com.scireum</groupId>
-    <artifactId>sirius-web</artifactId>
-    <version>PICK A VERSION</version>
-</dependency>
-```
-An overview of all versions can be found here: https://oss.sonatype.org/content/groups/public/com/scireum/sirius-web/
+* All relevant functions are defined in [donkey.js](/blob/master/src/main/resources/donkey.js)
+* XML nodes are presented as [StructuredNode](http://sirius-lib.net/apidocs/sirius-kernel/sirius/kernel/xml/StructuredNode.html)
+* Rows of Excel or CVS files are represented as: [Values](http://sirius-lib.net/apidocs/sirius-kernel/sirius/kernel/commons/Values.html)
+* **queryValue(String)** of StructuredNode and **at(String)** of Values return: [Value](http://sirius-lib.net/apidocs/sirius-kernel/sirius/kernel/commons/Value.html)
 
 ## License
 
-SIRIUS is licensed under the MIT License:
+DataDonkey is licensed under the MIT License:
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
