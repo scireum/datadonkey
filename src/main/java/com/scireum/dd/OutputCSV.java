@@ -12,23 +12,22 @@ import au.com.bytecode.opencsv.CSVWriter;
 import sirius.kernel.health.Exceptions;
 import sirius.kernel.nls.NLS;
 
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 /**
  * Used to write a CSV file from JavaScript
  * <p>
  * Used by donkey.js
- *
- * @author Andreas Haufler (aha@scireum.de)
  */
 public class OutputCSV {
 
     /*
      * Bridge method used by donkey.js
      */
-    public OutputCSV(String filename) throws IOException {
-        writer = new CSVWriter(new FileWriter(filename), ';', '"');
+    public OutputCSV(String filename, String encoding) throws IOException {
+        writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(filename), encoding), ';', '"');
     }
 
     protected CSVWriter writer;
@@ -46,7 +45,6 @@ public class OutputCSV {
         return this;
     }
 
-
     /*
      * Bridge method used by donkey.js
      */
@@ -57,5 +55,4 @@ public class OutputCSV {
             Exceptions.handle(e);
         }
     }
-
 }

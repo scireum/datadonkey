@@ -31,9 +31,6 @@ import java.util.List;
 
 /**
  * Processes line based input files like MS Excel or CSV.
- *
- * @author Andreas Haufler (aha@scireum.de)
- * @since 2013/09
  */
 public abstract class LineBasedProcessor {
 
@@ -48,7 +45,8 @@ public abstract class LineBasedProcessor {
     public static LineBasedProcessor create(String name, InputStream input) {
         if (name.toLowerCase().endsWith("xls")) {
             return new XLSProcessor(input);
-        } else if (name.toLowerCase().endsWith("csv")) {
+        }
+        if (name.toLowerCase().endsWith("csv")) {
             return new CSVProcessor(input);
         }
         throw Exceptions.createHandled().withSystemErrorMessage("Cannot process files of type: %s", name).handle();
@@ -122,7 +120,7 @@ public abstract class LineBasedProcessor {
     private static class CSVProcessor extends LineBasedProcessor {
         private InputStream input;
 
-        public CSVProcessor(InputStream input) {
+        private CSVProcessor(InputStream input) {
             super();
             this.input = input;
         }
@@ -146,7 +144,7 @@ public abstract class LineBasedProcessor {
     /**
      * Invoked by a LineBasedProcessor to handle one row.
      */
-    public static interface RowProcessor {
+    public interface RowProcessor {
         /**
          * Called the handle a row of an input file.
          * <p>

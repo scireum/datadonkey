@@ -8,7 +8,13 @@
 
 package com.scireum.dd;
 
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import sirius.kernel.health.Exceptions;
 import sirius.kernel.nls.NLS;
@@ -28,8 +34,6 @@ import java.util.List;
  * Used to write an Excel file from JavaScript
  * <p>
  * Used by donkey.js
- *
- * @author Andreas Haufler (aha@scireum.de)
  */
 public class OutputExcel {
 
@@ -41,7 +45,6 @@ public class OutputExcel {
     private HSSFCellStyle numeric;
     private HSSFCellStyle borderStyle;
     private HSSFCellStyle normalStyle;
-
 
     /**
      * Generates a new Export
@@ -157,14 +160,13 @@ public class OutputExcel {
 
     private HSSFCellStyle getCellStyleForObject(Object data) {
         HSSFCellStyle style = normalStyle;
-        if (data != null && (data instanceof LocalDate || data instanceof LocalDateTime)) {
+        if (data instanceof LocalDate || data instanceof LocalDateTime) {
             style = dateStyle;
-        } else if (data != null && (data instanceof Integer || data instanceof Double || data instanceof Long)) {
+        } else if (data instanceof Integer || data instanceof Double || data instanceof Long) {
             style = numeric;
         }
         return style;
     }
-
 
     /*
      * Bridge method used by donkey.js

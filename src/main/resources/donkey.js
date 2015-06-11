@@ -53,12 +53,25 @@ function inputFile(filename, callback) {
 
 /**
  * Generates a CSV file as output.
+ * <p>
+ * UTF-8 will be used as encoding
  *
  * @param filename the name of the file to create
  * @returns {com.scireum.dd.OutputCSV} which supports addRow(...) to output a row and close() to complete the output
  */
 function outputCSV(filename) {
-    return new com.scireum.dd.OutputCSV(filename);
+    return new com.scireum.dd.OutputCSV(filename, 'UTF-8');
+}
+
+/**
+ * Generates a CSV file as output.
+ *
+ * @param filename the name of the file to create
+ * @param encoding the encoding used to write the output file
+ * @returns {com.scireum.dd.OutputCSV} which supports addRow(...) to output a row and close() to complete the output
+ */
+function outputCSV(filename, encoding) {
+    return new com.scireum.dd.OutputCSV(filename, encoding);
 }
 
 /**

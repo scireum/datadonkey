@@ -19,8 +19,16 @@ import sirius.kernel.health.Log;
 import sirius.kernel.info.Product;
 import sirius.kernel.xml.XMLReader;
 
-import javax.script.*;
-import java.io.*;
+import javax.script.Invocable;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -28,14 +36,11 @@ import java.util.Map;
  * <p>
  * Also provides helper function visible in the scripting environment. These are called by the functions
  * defined in <tt>donkey.js</tt>
- *
- * @author Andreas Haufler (aha@scireum.de)
- * @since 2015/02
  */
 public class App {
 
     private static ScriptEngine engine;
-    private static Log LOG = Log.get("donkey");
+    private static final Log LOG = Log.get("donkey");
 
     public static void main(String[] args) {
         try {
@@ -133,5 +138,4 @@ public class App {
             Exceptions.handle(LOG, t);
         }
     }
-
 }
