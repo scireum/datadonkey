@@ -12,8 +12,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.scireum</groupId>
-        <artifactId>sirius-app-parent</artifactId>
-        <version>1.4.1</version>
+        <artifactId>sirius-parent</artifactId>
+        <version>1.7.1</version>
     </parent>
     <artifactId>datadonkey</artifactId>
     <version>1.1-SNAPSHOT</version>
@@ -23,9 +23,39 @@
     <url>https://github.com/scireum/datadonkey</url>
 
     <properties>
-        <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
         <checkstyle.file>checkstyle-basic.xml</checkstyle.file>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.scireum.App</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>donkey</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
