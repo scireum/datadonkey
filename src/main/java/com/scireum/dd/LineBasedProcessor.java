@@ -26,6 +26,7 @@ import sirius.kernel.nls.NLS;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,12 +43,12 @@ public abstract class LineBasedProcessor {
      * @return an appropriate processor for the given file
      * @throws sirius.kernel.health.HandledException if no processor can handle the given file
      */
-    public static LineBasedProcessor create(String name, InputStream input) {
+    public static LineBasedProcessor create(String name, InputStream input, Charset charset) {
         if (name.toLowerCase().endsWith("xls")) {
             return new XLSProcessor(input);
         }
         if (name.toLowerCase().endsWith("csv")) {
-            return new CSVProcessor(input);
+            return new CSVProcessor(input, charset);
         }
         throw Exceptions.createHandled().withSystemErrorMessage("Cannot process files of type: %s", name).handle();
     }
@@ -119,15 +120,17 @@ public abstract class LineBasedProcessor {
      */
     private static class CSVProcessor extends LineBasedProcessor {
         private InputStream input;
+        private Charset charset;
 
-        private CSVProcessor(InputStream input) {
+        private CSVProcessor(InputStream input, Charset charset) {
             super();
             this.input = input;
+            this.charset = charset;
         }
 
         @Override
         public void run(RowProcessor rowProcessor) throws Exception {
-            CSVReader reader = new CSVReader(new BOMReader(new InputStreamReader(input, Charsets.UTF_8)), ';');
+            CSVReader reader = new CSVReader(new BOMReader(new InputStreamReader(input, charset)), ';');
             String[] nextLine;
             int current = 0;
             TaskContext tc = TaskContext.get();

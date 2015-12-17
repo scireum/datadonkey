@@ -46,7 +46,21 @@ function parseXML(filename, parseMap) {
  * number and the current row as sirius.kernel.commons.Values
  */
 function inputFile(filename, callback) {
-    donkey.importFile(filename, {
+    donkey.importFile(filename, 'UTF-8', {
+        row: callback
+    });
+}
+
+/**
+ * Parses an Excel or CSV file.
+ *
+ * @param filename the name of the file to parse
+ * @param encoding the encoding used to write the output file
+ * @param callback a handler function called for each row. It must accept two parameters, the line
+ * number and the current row as sirius.kernel.commons.Values
+ */
+function inputFileWithEncoding(filename, encoding, callback) {
+    donkey.importFile(filename, encoding, {
         row: callback
     });
 }
@@ -70,7 +84,7 @@ function outputCSV(filename) {
  * @param encoding the encoding used to write the output file
  * @returns {com.scireum.dd.OutputCSV} which supports addRow(...) to output a row and close() to complete the output
  */
-function outputCSV(filename, encoding) {
+function outputCSVWithEncoding(filename, encoding) {
     return new com.scireum.dd.OutputCSV(filename, encoding);
 }
 
