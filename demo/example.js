@@ -12,7 +12,7 @@ var articleTextMap = {};
 // Defines all node handler used to parse the xml
 // In this case we want to handle each <item> tag...
 var parserMap = {
-    'item' : function(node) {
+    'item': function (node) {
         // node is of type sirius.kernel.xml.StructuredNode and provides queryString and queryValue which both
         // evaluate XPATH expressions against the sub DOM (an item tag in this case)
         articleTextMap[node.queryString('number')] = node.queryString('shorttext');
@@ -27,7 +27,7 @@ parseXML('demo/example.xml', parserMap);
 var out = outputExcel();
 
 // Parse the example.csv which contains the item number along with its price
-inputFile('demo/example.csv', function(line, row) {
+inputFile('demo/example.csv', function (line, row) {
     // Invoked per row. The row object is of type scireum.kernel.commons.Values
     // The at function accepts an "Excel style" column number and returns a scireum.kernel.commons.Value
     // which helps to convert the data into all kinds of types
@@ -39,7 +39,7 @@ inputFile('demo/example.csv', function(line, row) {
     out.addRow(itemNumber, shorttext, price.getAmount());
 
     // Log some info to the console
-    log(itemNumber+': "' + shorttext + '" Price: '+price.toString());
+    log(itemNumber + ': "' + shorttext + '" Price: ' + price.toString());
 });
 
 // Save the result as xls file...
