@@ -9,6 +9,7 @@
 package com.scireum.dd;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.scireum.App;
 import sirius.kernel.health.Exceptions;
 import sirius.kernel.nls.NLS;
 
@@ -27,6 +28,7 @@ public class OutputCSV {
      * Bridge method used by donkey.js
      */
     public OutputCSV(String filename, String encoding) throws IOException {
+        App.LOG.INFO("Generating output: %s (%s)", filename, encoding);
         writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(filename), encoding), ';', '"');
     }
 

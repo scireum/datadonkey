@@ -8,6 +8,7 @@
 
 package com.scireum.dd;
 
+import com.scireum.App;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
@@ -173,6 +174,7 @@ public class OutputExcel {
      */
     public void save(String filename) {
         try {
+            App.LOG.INFO("Saving %s lines to: %s", rows, filename);
             try (FileOutputStream out = new FileOutputStream(filename)) {
                 writeToStream(out);
             }
