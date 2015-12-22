@@ -9,7 +9,6 @@
 package com.scireum.dd;
 
 import au.com.bytecode.opencsv.CSVReader;
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -90,20 +89,32 @@ public abstract class LineBasedProcessor {
                     Cell cell = row.getCell(i);
                     Object value = null;
                     if (cell != null) {
-                        if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+                        int cellType = cell.getCellType();
+                        if (cellType == HSSFCell.CELL_TYPE_FORMULA) {
+                            cellType = cell.getCachedFormulaResultType();
+                        }
+                        if (cellType == HSSFCell.CELL_TYPE_BOOLEAN) {
                             value = cell.getBooleanCellValue();
-                        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                        } else if (cellType == HSSFCell.CELL_TYPE_NUMERIC) {
                             double val = cell.getNumericCellValue();
                             if (Doubles.isZero(Doubles.frac(val))) {
                                 value = Math.round(val);
                             } else {
                                 value = val;
                             }
-                        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+                        } else if (cellType == HSSFCell.CELL_TYPE_STRING) {
                             value = cell.getRichStringCellValue().getString();
                             if (value != null) {
                                 value = ((String) value).trim();
                             }
+                        } else {
+                            throw Exceptions.createHandled()
+                                            .withSystemErrorMessage(
+                                                    "Cannot read a value of type %d from cell at row %d, column  %d",
+                                                    cellType,
+                                                    cell.getRowIndex(),
+                                                    cell.getColumnIndex())
+                                            .handle();
                         }
                     }
                     values.add(value);
