@@ -8,8 +8,8 @@
 
 package com.scireum.dd;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import com.scireum.App;
+import sirius.kernel.commons.CSVWriter;
 import sirius.kernel.health.Exceptions;
 import sirius.kernel.nls.NLS;
 
@@ -29,7 +29,7 @@ public class OutputCSV {
      */
     public OutputCSV(String filename, String encoding) throws IOException {
         App.LOG.INFO("Generating output: %s (%s)", filename, encoding);
-        writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(filename), encoding), ';', '"');
+        writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(filename), encoding));
     }
 
     protected CSVWriter writer;
@@ -38,11 +38,11 @@ public class OutputCSV {
      * Bridge method used by donkey.js
      */
     public OutputCSV addRow(Object... row) {
-        String[] arr = new String[row.length];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = NLS.toUserString(row[i]);
+        try {
+            writer.writeArray(row);
+        } catch (IOException e) {
+            Exceptions.handle(e);
         }
-        writer.writeNext(arr);
 
         return this;
     }
