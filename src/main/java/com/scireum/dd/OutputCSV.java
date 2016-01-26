@@ -11,7 +11,6 @@ package com.scireum.dd;
 import com.scireum.App;
 import sirius.kernel.commons.CSVWriter;
 import sirius.kernel.health.Exceptions;
-import sirius.kernel.nls.NLS;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
