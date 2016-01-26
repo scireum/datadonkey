@@ -142,7 +142,7 @@ public abstract class LineBasedProcessor {
 
         @Override
         public void run(RowProcessor rowProcessor) throws Exception {
-            CSVReader reader = new CSVReader(new BOMReader(new InputStreamReader(input, Charsets.UTF_8)));
+            CSVReader reader = new CSVReader(new BOMReader(new InputStreamReader(input, charset)));
             AtomicInteger rowCounter = new AtomicInteger(0);
             TaskContext tc = TaskContext.get();
 
