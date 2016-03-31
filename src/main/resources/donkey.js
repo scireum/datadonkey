@@ -97,3 +97,21 @@ function outputCSVWithEncoding(filename, encoding) {
 function outputExcel() {
     return new com.scireum.dd.OutputExcel();
 }
+
+/**
+ * Loads the given URL and provides a JQuery like query language using JSoup.
+ * @param url the url to open
+ * @returns {*} the Document which must notably supports "select" to perform a JQuery like expression to find Node(s).
+ */
+function jsoup(url) {
+    return donkey.jsoup(url);
+}
+
+/**
+ * Determines if the given string is non-null and not empty.
+ * @param str the string to check
+ * @returns true if the string is non-null and not empty, false otherwise
+ */
+function isFilled(str) {
+    return donkey.isFilled(str);
+}

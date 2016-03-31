@@ -8,15 +8,21 @@
 
 package com.scireum;
 
+import com.google.common.collect.Maps;
 import com.scireum.dd.LineBasedProcessor;
 import org.apache.log4j.Level;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import sirius.kernel.Setup;
 import sirius.kernel.Sirius;
 import sirius.kernel.commons.RateLimit;
+import sirius.kernel.commons.Strings;
 import sirius.kernel.commons.Values;
+import sirius.kernel.commons.Wait;
 import sirius.kernel.commons.Watch;
 import sirius.kernel.health.Average;
 import sirius.kernel.health.Exceptions;
+import sirius.kernel.health.HandledException;
 import sirius.kernel.health.Log;
 import sirius.kernel.info.Product;
 import sirius.kernel.xml.XMLReader;
@@ -31,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -153,6 +160,8 @@ public class App {
             LOG.INFO("Read %d elements. Avgerage duration per element: %1.2d ms", avg.getCount(), avg.getAvg() / 1000d);
             LOG.INFO("Completed reading: %s", file);
             LOG.INFO("-------------------------------------------------------------------------------");
+        } catch (HandledException t) {
+            LOG.SEVERE(t);
         } catch (Throwable t) {
             Exceptions.handle(LOG, t);
         }
@@ -185,8 +194,57 @@ public class App {
             LOG.INFO("Read %d lines. Average duration per line: %1.2f ms", avg.getCount(), avg.getAvg() / 1000d);
             LOG.INFO("Completed reading: %s", file);
             LOG.INFO("-------------------------------------------------------------------------------\n");
+        } catch (HandledException t) {
+            LOG.SEVERE(t);
         } catch (Throwable t) {
             Exceptions.handle(LOG, t);
         }
+    }
+
+    /**
+     * Used to rate-limit the requests made against a host to a certain amount (roughly every 1,5s).
+     * <p>
+     * That shouldn't cause any trouble in the target system when scraping or indexing a site.
+     */
+    private Map<String, Long> lastInteraction = Maps.newConcurrentMap();
+
+    /*
+     * Bridge method used by donkey.js
+     */
+    public Document jsoup(String url) {
+        try {
+            filterHostBlocker();
+
+            URL u = new URL(url);
+            long li = lastInteraction.getOrDefault(u.getHost(), 0l);
+            long delta = System.currentTimeMillis() - li;
+            if (delta < 1000) {
+                Wait.randomMillis(1000, 2000);
+            }
+            lastInteraction.put(u.getHost(), System.currentTimeMillis());
+
+            return Jsoup.connect(url)
+                        .userAgent("Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)")
+                        .followRedirects(true)
+                        .get();
+        } catch (IOException e) {
+            Exceptions.handle(LOG, e);
+            return null;
+        }
+    }
+
+    private void filterHostBlocker() {
+        long limit = System.currentTimeMillis() - 5000;
+        lastInteraction.entrySet()
+                       .stream()
+                       .filter(e -> e.getValue().longValue() < limit)
+                       .forEach(e -> lastInteraction.remove(e.getKey()));
+    }
+
+    /*
+     * Bridge method used by donkey.js
+     */
+    public boolean isFilled(Object o) {
+        return Strings.isFilled(o);
     }
 }
