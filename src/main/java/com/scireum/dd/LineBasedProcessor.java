@@ -8,7 +8,6 @@
 
 package com.scireum.dd;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -109,6 +108,8 @@ public abstract class LineBasedProcessor {
                             if (value != null) {
                                 value = ((String) value).trim();
                             }
+                        } else if (cellType == HSSFCell.CELL_TYPE_BLANK) {
+                            value = null;
                         } else {
                             throw Exceptions.createHandled()
                                             .withSystemErrorMessage(
