@@ -16,7 +16,7 @@
         <version>2.0.1</version>
     </parent>
     <artifactId>datadonkey</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <packaging>jar</packaging>
     <name>DataDonkey</name>
     <description>Provides a simple tool for handling XML, CSV and Excel files.</description>
