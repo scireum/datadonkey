@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import sirius.kernel.Setup;
 import sirius.kernel.Sirius;
+import sirius.kernel.commons.Explain;
 import sirius.kernel.commons.RateLimit;
 import sirius.kernel.commons.Strings;
 import sirius.kernel.commons.Values;
@@ -50,8 +51,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class App {
 
-    private static ScriptEngine engine;
+    /**
+     * Contains the logger used by the applicatiobn layer.
+     */
     public static final Log LOG = Log.get("donkey");
+
+    private static final String LINE =
+            "-------------------------------------------------------------------------------";
+    private static ScriptEngine engine;
     private static final RateLimit reportLimit = RateLimit.timeInterval(5, TimeUnit.SECONDS);
 
     public static void main(String[] args) {
@@ -61,7 +68,7 @@ public class App {
             createScriptingEngine();
             evalDonkeyLibrary();
             loadAndExecuteScript(args[0]);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Exceptions.handle(t);
         } finally {
             Sirius.stop();
@@ -71,16 +78,16 @@ public class App {
     private static void loadAndExecuteScript(String arg) throws ScriptException, FileNotFoundException {
         engine.put(ScriptEngine.FILENAME, arg);
         LOG.INFO("Executing '%s'...", arg);
-        LOG.INFO("-------------------------------------------------------------------------------");
+        LOG.INFO(LINE);
         Watch w = Watch.start();
         engine.eval(new FileReader(arg));
-        LOG.INFO("-------------------------------------------------------------------------------");
+        LOG.INFO(LINE);
         LOG.INFO("Execution completed: %s", w.duration());
     }
 
     private static void evalDonkeyLibrary() throws ScriptException {
         LOG.INFO("Loading 'donkey.js'...");
-        LOG.INFO("-------------------------------------------------------------------------------");
+        LOG.INFO(LINE);
         engine.put(ScriptEngine.FILENAME, "donkey.js");
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/donkey.js")));
     }
@@ -94,7 +101,7 @@ public class App {
     private static void verifyCommandLine(String[] args) {
         LOG.INFO(Product.getProduct().getName());
         LOG.INFO(Product.getProduct().getDetails());
-        LOG.INFO("-------------------------------------------------------------------------------");
+        LOG.INFO(LINE);
         if (args.length == 0) {
             LOG.INFO("Supply a JavaScript file as parameter!");
             LOG.INFO("Visit https://github.com/scireum/datadonkey for further information");
@@ -113,6 +120,8 @@ public class App {
      *
      * @param o the object / message to log
      */
+    @SuppressWarnings("squid:S1845")
+    @Explain("Name is fixed as it is used in JavaScript")
     public void log(Object o) {
         LOG.INFO(o);
     }
@@ -136,13 +145,13 @@ public class App {
      */
     public void parseXML(String file, Map<String, Object> handlers) throws IOException {
         LOG.INFO("Reading: %s", file);
-        LOG.INFO("-------------------------------------------------------------------------------");
+        LOG.INFO(LINE);
         Average avg = new Average();
         Watch w = Watch.start();
         try {
             XMLReader r = new XMLReader();
             for (final Map.Entry<String, Object> pair : handlers.entrySet()) {
-                r.addHandler(pair.getKey(), (node) -> {
+                r.addHandler(pair.getKey(), node -> {
                     try {
                         ((Invocable) engine).invokeMethod(pair.getValue(), "process", node);
                         avg.addValue(w.elapsed(TimeUnit.MICROSECONDS, true));
@@ -157,12 +166,12 @@ public class App {
                 });
             }
             r.parse(new FileInputStream(file));
-            LOG.INFO("Read %d elements. Avgerage duration per element: %1.2d ms", avg.getCount(), avg.getAvg() / 1000d);
+            LOG.INFO("Read %d elements. Avgerage duration per element: %1.2f ms", avg.getCount(), avg.getAvg() / 1000d);
             LOG.INFO("Completed reading: %s", file);
-            LOG.INFO("-------------------------------------------------------------------------------");
+            LOG.INFO(LINE);
         } catch (HandledException t) {
             LOG.SEVERE(t);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Exceptions.handle(LOG, t);
         }
     }
@@ -172,7 +181,7 @@ public class App {
      */
     public void importFile(String file, String charset, Object callback) {
         LOG.INFO("Reading: %s", file);
-        LOG.INFO("-------------------------------------------------------------------------------");
+        LOG.INFO(LINE);
         try {
             Average avg = new Average();
             Watch w = Watch.start();
@@ -196,7 +205,7 @@ public class App {
             LOG.INFO("-------------------------------------------------------------------------------\n");
         } catch (HandledException t) {
             LOG.SEVERE(t);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             Exceptions.handle(LOG, t);
         }
     }
@@ -216,7 +225,7 @@ public class App {
             filterHostBlocker();
 
             URL u = new URL(url);
-            long li = lastInteraction.getOrDefault(u.getHost(), 0l);
+            long li = lastInteraction.getOrDefault(u.getHost(), 0L);
             long delta = System.currentTimeMillis() - li;
             if (delta < 1000) {
                 Wait.randomMillis(1000, 2000);
@@ -224,6 +233,7 @@ public class App {
             lastInteraction.put(u.getHost(), System.currentTimeMillis());
 
             return Jsoup.connect(url)
+                        .header("Connection", "close")
                         .userAgent("Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)")
                         .followRedirects(true)
                         .get();
@@ -246,5 +256,12 @@ public class App {
      */
     public boolean isFilled(Object o) {
         return Strings.isFilled(o);
+    }
+
+    /*
+     * Bridge method used by donkey.js
+     */
+    public String urlEncode(String o) {
+        return Strings.urlEncode(o);
     }
 }

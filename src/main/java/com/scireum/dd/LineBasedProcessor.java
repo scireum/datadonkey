@@ -18,8 +18,8 @@ import sirius.kernel.async.TaskContext;
 import sirius.kernel.commons.BOMReader;
 import sirius.kernel.commons.CSVReader;
 import sirius.kernel.commons.Doubles;
+import sirius.kernel.commons.Explain;
 import sirius.kernel.commons.Values;
-import sirius.kernel.commons.Watch;
 import sirius.kernel.health.Exceptions;
 import sirius.kernel.nls.NLS;
 
@@ -59,6 +59,8 @@ public abstract class LineBasedProcessor {
      * @param rowProcessor the processor which handles each row of the file
      * @throws Exception in case an error occurred while processing.
      */
+    @SuppressWarnings("squid:S00112")
+    @Explain("We prefer a generic error handling here, as only fatal errors war thrown.")
     public abstract void run(RowProcessor rowProcessor) throws Exception;
 
     /**
@@ -80,51 +82,56 @@ public abstract class LineBasedProcessor {
             int current = 0;
             TaskContext tc = TaskContext.get();
             while (iter.hasNext() && tc.isActive()) {
-                Watch w = Watch.start();
                 current++;
                 Row row = iter.next();
                 short first = 0;
                 short last = row.getLastCellNum();
                 List<Object> values = Lists.newArrayList();
                 for (int i = first; i <= last; i++) {
-                    Cell cell = row.getCell(i);
-                    Object value = null;
-                    if (cell != null) {
-                        int cellType = cell.getCellType();
-                        if (cellType == HSSFCell.CELL_TYPE_FORMULA) {
-                            cellType = cell.getCachedFormulaResultType();
-                        }
-                        if (cellType == HSSFCell.CELL_TYPE_BOOLEAN) {
-                            value = cell.getBooleanCellValue();
-                        } else if (cellType == HSSFCell.CELL_TYPE_NUMERIC) {
-                            double val = cell.getNumericCellValue();
-                            if (Doubles.isZero(Doubles.frac(val))) {
-                                value = Math.round(val);
-                            } else {
-                                value = val;
-                            }
-                        } else if (cellType == HSSFCell.CELL_TYPE_STRING) {
-                            value = cell.getRichStringCellValue().getString();
-                            if (value != null) {
-                                value = ((String) value).trim();
-                            }
-                        } else if (cellType == HSSFCell.CELL_TYPE_BLANK) {
-                            value = null;
-                        } else {
-                            throw Exceptions.createHandled()
-                                            .withSystemErrorMessage(
-                                                    "Cannot read a value of type %d from cell at row %d, column  %d",
-                                                    cellType,
-                                                    cell.getRowIndex(),
-                                                    cell.getColumnIndex())
-                                            .handle();
-                        }
-                    }
-                    values.add(value);
+                    processCell(row, values, i);
                 }
                 rowProcessor.handleRow(current, Values.of(values));
                 tc.setState(NLS.get("LineBasedProcessor.linesProcessed"), current);
             }
+        }
+
+        @SuppressWarnings("squid:S3776")
+        @Explain("We'd rather keep the login in one place here")
+        private void processCell(Row row, List<Object> values, int index) {
+            Cell cell = row.getCell(index);
+            Object value = null;
+            if (cell != null) {
+                int cellType = cell.getCellType();
+                if (cellType == HSSFCell.CELL_TYPE_FORMULA) {
+                    cellType = cell.getCachedFormulaResultType();
+                }
+                if (cellType == HSSFCell.CELL_TYPE_BOOLEAN) {
+                    value = cell.getBooleanCellValue();
+                } else if (cellType == HSSFCell.CELL_TYPE_NUMERIC) {
+                    double val = cell.getNumericCellValue();
+                    if (Doubles.isZero(Doubles.frac(val))) {
+                        value = Math.round(val);
+                    } else {
+                        value = val;
+                    }
+                } else if (cellType == HSSFCell.CELL_TYPE_STRING) {
+                    value = cell.getRichStringCellValue().getString();
+                    if (value != null) {
+                        value = ((String) value).trim();
+                    }
+                } else if (cellType == HSSFCell.CELL_TYPE_BLANK) {
+                    value = null;
+                } else {
+                    throw Exceptions.createHandled()
+                                    .withSystemErrorMessage(
+                                            "Cannot read a value of type %d from cell at row %d, column  %d",
+                                            cellType,
+                                            cell.getRowIndex(),
+                                            cell.getColumnIndex())
+                                    .handle();
+                }
+            }
+            values.add(value);
         }
     }
 

@@ -115,3 +115,12 @@ function jsoup(url) {
 function isFilled(str) {
     return donkey.isFilled(str);
 }
+
+/**
+ * URL encodes the given string.
+ * @param str the string to encode
+ * @returns the URL encoded string
+ */
+function urlEncode(str) {
+    return donkey.urlEncode(str);
+}
