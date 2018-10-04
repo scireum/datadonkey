@@ -102,10 +102,10 @@ function outputExcel() {
  * Generates an XML file as output.
  *
  * @param filename the name of the file to create
- * @returns {com.scireum.dd.OutputXML} which holds an sirius.kernel.xml.XMLStructuredOutput
+ * @returns A {sirius.kernel.xml.XMLStructuredOutput}
  */
 function outputXML(filename) {
-    return new com.scireum.dd.OutputXML(filename, null);
+    return outputXMLWithDoctype(filename, null);
 }
 
 /**
@@ -113,10 +113,14 @@ function outputXML(filename) {
  *
  * @param filename the name of the file to create
  * @param doctypeSystem the system to use in the doctype of the xml file
- * @returns {com.scireum.dd.OutputXML} which holds an sirius.kernel.xml.XMLStructuredOutput
+ * @returns A {sirius.kernel.xml.XMLStructuredOutput}
  */
 function outputXMLWithDoctype(filename, doctypeSystem) {
-    return new com.scireum.dd.OutputXML(filename, doctypeSystem);
+    return new Packages.sirius.kernel.xml.XMLStructuredOutput(new java.io.FileOutputStream(filename), doctypeSystem);
+}
+
+function xmlAttribute(name, value) {
+    return Packages.sirius.kernel.xml.Attribute.set(name, value);
 }
 
 /**

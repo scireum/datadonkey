@@ -1,17 +1,17 @@
 // example xml output
 var out = outputXMLWithDoctype("demo/xml-output/xml-example.xml", "some_system.dtd");
-out.xml().beginResult("root-element");
+out.beginResult("root-element");
 
-out.xml().beginObject("HEADER");
-out.xml().property("title", "my xml");
-out.xml().endObject();
+out.beginObject("HEADER");
+out.property("title", "my xml");
+out.endObject();
 
 // fluent call
-out.xml().beginObject("CONTENT")
+out.beginObject("CONTENT")
 // text-tag with attribute
-    .beginObject("paragraph", out.attr("type", "text"))
+    .beginObject("paragraph", xmlAttribute("type", "text"))
     .text("This is a paragraph")
     .endObject()
     .endObject();
 
-out.xml().endResult();
+out.endResult();
