@@ -99,6 +99,31 @@ function outputExcel() {
 }
 
 /**
+ * Generates an XML file as output.
+ *
+ * @param filename the name of the file to create
+ * @returns A {sirius.kernel.xml.XMLStructuredOutput}
+ */
+function outputXML(filename) {
+    return outputXMLWithDoctype(filename, null);
+}
+
+/**
+ * Generates an XML file as output.
+ *
+ * @param filename the name of the file to create
+ * @param doctypeSystem the system to use in the doctype of the xml file
+ * @returns A {sirius.kernel.xml.XMLStructuredOutput}
+ */
+function outputXMLWithDoctype(filename, doctypeSystem) {
+    return new Packages.sirius.kernel.xml.XMLStructuredOutput(new java.io.FileOutputStream(filename), doctypeSystem);
+}
+
+function xmlAttribute(name, value) {
+    return Packages.sirius.kernel.xml.Attribute.set(name, value);
+}
+
+/**
  * Loads the given URL and provides a JQuery like query language using JSoup.
  * @param url the url to open
  * @returns {*} the Document which must notably supports "select" to perform a JQuery like expression to find Node(s).

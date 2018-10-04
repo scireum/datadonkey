@@ -15,4 +15,9 @@ public class DonkeyTest {
     public void testDonkey() {
         App.main(new String[]{"demo/example.js"});
     }
+
+    @Test
+    public void testXMLOutput() {
+        App.main(new String[]{"demo/xml-output/xml-example.js"});
+    }
 }

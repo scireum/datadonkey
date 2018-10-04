@@ -11,6 +11,8 @@ Download the latest datadonkey.jar from: https://oss.sonatype.org/content/groups
 See [demo/example.js](demo/example.js) for an example script which combines an XML source ([demo/example.xml](demo/example.xml)) with a
 CSV file ([demo/example.csv](demo/example.csv)) and generates an Excel output.
 
+See [demo/xml-output/xml-example.js](demo/xml-output/xml-example.js) for an example on how to output XML.
+
 ## Usage
 
 > java -jar datadonkey.jar myscript.js
