@@ -156,7 +156,7 @@ public class App {
                         ((Invocable) engine).invokeMethod(pair.getValue(), "process", node);
                         avg.addValue(w.elapsed(TimeUnit.MICROSECONDS, true));
                         if (reportLimit.check()) {
-                            LOG.INFO("Read %d elements. Avg. duration per element: %1.2d ms",
+                            LOG.INFO("Read %d elements. Avg. duration per element: %1.2f ms",
                                      avg.getCount(),
                                      avg.getAvg() / 1000d);
                         }
