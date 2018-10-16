@@ -80,7 +80,11 @@ public class App {
         LOG.INFO("Executing '%s'...", arg);
         LOG.INFO(LINE);
         Watch w = Watch.start();
-        engine.eval(new FileReader(arg));
+        try (FileReader fileReader = new FileReader(arg)) {
+            engine.eval(fileReader);
+        } catch (Exception e) {
+            throw Exceptions.handle(e);
+        }
         LOG.INFO(LINE);
         LOG.INFO("Execution completed: %s", w.duration());
     }
@@ -89,7 +93,11 @@ public class App {
         LOG.INFO("Loading 'donkey.js'...");
         LOG.INFO(LINE);
         engine.put(ScriptEngine.FILENAME, "donkey.js");
-        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/donkey.js")));
+        try (InputStreamReader inputStreamReader = new InputStreamReader(App.class.getResourceAsStream("/donkey.js"))) {
+            engine.eval(inputStreamReader);
+        } catch (Exception e) {
+            throw Exceptions.handle(e);
+        }
     }
 
     private static void createScriptingEngine() {
