@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -67,7 +68,7 @@ public class App {
             verifyCommandLine(args);
             createScriptingEngine();
             evalDonkeyLibrary();
-            loadAndExecuteScript(args[0]);
+            loadAndExecuteScript(args[0], Arrays.copyOfRange(args, 1, args.length));
         } catch (Exception t) {
             Exceptions.handle(t);
         } finally {
@@ -75,12 +76,14 @@ public class App {
         }
     }
 
-    private static void loadAndExecuteScript(String arg) throws ScriptException, FileNotFoundException {
-        engine.put(ScriptEngine.FILENAME, arg);
-        LOG.INFO("Executing '%s'...", arg);
+    private static void loadAndExecuteScript(String filename, String[] args)
+            throws ScriptException, FileNotFoundException {
+        engine.put(ScriptEngine.FILENAME, filename);
+        engine.getContext().setAttribute("args", Values.of(args), ScriptContext.ENGINE_SCOPE);
+        LOG.INFO("Executing '%s'...", filename);
         LOG.INFO(LINE);
         Watch w = Watch.start();
-        try (FileReader fileReader = new FileReader(arg)) {
+        try (FileReader fileReader = new FileReader(filename)) {
             engine.eval(fileReader);
         } catch (Exception e) {
             throw Exceptions.handle(e);
