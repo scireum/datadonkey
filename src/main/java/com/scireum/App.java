@@ -79,7 +79,7 @@ public class App {
     private static void loadAndExecuteScript(String filename, String[] args)
             throws ScriptException, FileNotFoundException {
         engine.put(ScriptEngine.FILENAME, filename);
-        engine.getContext().setAttribute("args", args, ScriptContext.ENGINE_SCOPE);
+        engine.getContext().setAttribute("args", Values.of(args), ScriptContext.ENGINE_SCOPE);
         LOG.INFO("Executing '%s'...", filename);
         LOG.INFO(LINE);
         Watch w = Watch.start();
