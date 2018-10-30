@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE root-element SYSTEM "some_system.dtd">
 <root-element>
-<HEADER>
-<title>my xml</title>
-</HEADER>
-<CONTENT>
-<paragraph type="text">This is a paragraph</paragraph>
-</CONTENT>
+    <HEADER>
+        <title>my xml</title>
+    </HEADER>
+    <CONTENT>
+        <paragraph type="text">This is a paragraph</paragraph>
+    </CONTENT>
 </root-element>
